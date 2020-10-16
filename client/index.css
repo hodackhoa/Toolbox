@@ -1,0 +1,407 @@
+body{
+	font-family: Myriad Pro;
+	width: 230px;
+	height: auto;
+	margin: 0 auto;
+	background-color: #4d4d4d;
+	overflow: auto;
+	user-select: none;
+}
+body::-webkit-scrollbar{
+	display: none;
+}
+	main{
+		width: 96%;
+		padding: 0 2%;
+	}
+		#menuPanel{
+			height: 10px;
+			text-align: right;
+		}
+			#menuPanel img{
+				opacity: 0.5;
+				transition: 0.3s;
+			}
+			#menuPanel img:hover{
+				opacity: 1;
+			}
+			#listPanel{
+				display: none;
+				position: absolute;
+				top:0;
+				right: 10px;
+				font-size: 0.75em;
+				list-style: none;
+				padding: 2px 2px;
+				text-align: left;
+				background-color: white;
+				cursor: default;
+				box-shadow: 2px 2px 6px #3f3f3f;
+				z-index: 3;
+			}
+				#listPanel li{
+					padding: 0.2em 1em;
+				}
+				#listPanel li:hover{
+					background-color: #3274ce;
+					color: white;
+				}
+	fieldset{
+		border: 1px solid #383838;
+		margin: 0 0 .5em 0;
+		padding: .2em 0;
+	}
+		legend{
+			font-family: Segoe UI Symbol;
+			font-size: .6em;
+			font-weight: bold;
+			color: #b4b4b4;
+			margin-left: 1em;
+		}
+		button{
+			outline: none;
+			border: none;
+			transition: .3s;
+			border-radius: 5px;
+			padding: .5em 1em;
+			color: white;
+			font-size: .65em;
+			width: 45%;
+			margin-top: .5em;
+		}
+		label {
+			font-family: Segoe UI Symbol;
+		}
+	#controlShowtimer{
+		text-align: right;
+		display: none;
+	}
+	#controlShowtimer h6{
+		color: #00d8bc;
+		cursor: default;
+		margin: 0 .3em;
+		font-size: .6em;
+		transition: 0.3s;
+		display: inline-block;
+	}
+	#controlShowtimer h6:hover{
+		color: #039994;
+		text-decoration: underline;
+	}
+	#timer{
+		font-family: Segoe UI Symbol;
+		text-align: center;
+		margin: 0 .3em;
+		color: #00ffde;
+		font-size: 1.2em;
+		border: 1px solid #00ffde;
+		transition: 3s;
+		cursor: default;
+		display: none;
+	}
+	#makeMargin{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		flex-wrap: wrap;
+	}	
+		.btnTemplate:active{
+			opacity: 0.6;
+		}
+	#inforVariant{
+		text-align: center;
+	}
+		#inforVariant h4{
+			margin: 0.5em 1em;
+			color: #00b7ac;
+		}
+		#inforVariant h5{
+			margin: 0.5em 1em;
+			color: #929292;
+		}
+		#inforVariant h5 span{
+			color: #c6c6c6;
+		}
+	/*  panel other---------------- */
+	#other{
+		/*-------*/
+	}
+		#otherFunction{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-around;
+		}
+			#clrGuide{
+				background-color: #414141;
+				color: #a7a7a7;
+				transition: 0.3;
+				font-weight: bold;
+			}
+			#clrGuide:hover{
+				color: #e9e7e7;
+			}
+			#clrGuide:active{
+				background-color: #262626;
+			}
+				#clrGuide span{
+					color: #00a19b;
+					font-weight: bolder;
+				}
+			#restoreHis{
+				background-color: #414141;
+				color: #a7a7a7;
+				font-weight: bold;
+				transition: 0.3;
+			}
+			#restoreHis:hover{
+				color: #e9e7e7;
+			}
+			#restoreHis:active{
+				background-color: #262626;
+			}
+			#checkBoxParent{
+				text-align: center;
+				margin: .5em 0;
+				color: #c2c2c2;
+				font-size: .8em;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+			}
+				#checkedBot{
+					width: 1.1em;
+					height: 1.1em;	
+				}
+		#extendsTool{	
+		}
+			#controlMenuTools{
+				text-align: right;
+				margin: 0.2em 1em 0;
+				height: 10px;
+				position: relative;
+			}
+				#controlMenuTools img{
+					opacity: 0.5;
+					transition: 0.3s;
+					cursor: pointer;
+				}
+				#controlMenuTools img:hover{
+					opacity: 1;
+				}
+				#menuTool{
+					position: absolute;
+					top:0;
+					right: 0;
+					padding: 0;
+					text-align: left;
+					font-size: .8em;
+					list-style: none;
+					background-color: #4d4d4d;
+					border: 2px solid #363636;
+					cursor: default;
+					transition: 0.3s;
+					box-shadow: 0px 0px 5px #282828;
+					display: none;
+				}
+				#menuTool li{
+					padding: .4em 1em 0em .4em;
+					color: #bfbfbf;
+					border-bottom: 1px solid #606060;
+				}
+				#menuTool li:hover{
+					background-color: #007ece;
+				}
+			.groupTools{
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-around;
+				display: none;
+			}
+			#shadowTools{
+
+			}
+				#shadowBtn{
+					background-color: #111111;
+					margin: 0;
+				}
+				#shadowBtn:hover{
+					background-color: #343434;
+				}
+				#shadowBtn:active{
+					background-color: #111111;
+				}
+			#pathTools{
+
+			}
+				#makePathBtn{
+					background-color: #414141;
+					color: #a7a7a7;
+					font-weight: bold;
+					transition: 0.3;
+				}
+				#makePathBtn:hover{
+					color: #dfdfdf;
+				}
+				#makePathBtn:active{
+					background-color: #252525;
+				}
+	#btnGrSave{
+		text-align: center;
+		margin: 0.2em 0;
+	}
+		#settingDir{
+			text-align: right;
+			margin: 0.5em 0.5em;
+			position: relative;
+		}
+			#grActionBtn{
+				display: flex;
+				flex-direction: row;
+				justify-content: space-around;
+			}
+			#settingDir #popupDir{
+				font-family: arial;
+				visibility: hidden;
+				position: absolute;
+				top: 30px;
+				background-color: #f9f8b9;
+				color: black;
+				font-size: .6em;
+				padding: .2em .3em;
+			}
+			#settingDir:hover> #popupDir{
+				visibility: visible;
+			}
+			#treeHandle{
+				color: #30a0aa !important;
+			}
+			.action-Btn{
+				opacity: 0.5;
+				transition: 0.3s;
+			}
+			.action-Btn:hover{
+				opacity: 1;
+				height: 20px;
+				/*width: 30px;*/
+			}
+			#settingConfig:hover{
+				animation: spinOne .3s linear;
+			}
+			@keyframes spinOne{
+				0%{transform: rotate(0deg);}
+				100%{transform: rotate(120deg);}
+			}
+			#treeHandle:hover{
+				opacity: 1;
+				width: 20px;
+			}
+		#btnSave{
+			background-color: inherit;
+			border: 1px solid #a1a1a1;
+			border-radius: 30px !important;
+			margin: 0 !important;
+		}
+		#btnSave:hover{
+			background-color: #808080;
+		}
+		#btnSave:active{
+			background-color: #626262;
+		}
+@media only screen and (min-width: 640px) and (max-width: 1920px){
+	body{
+		width: 100%;
+	}
+	main{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;
+
+	}
+	#templates{
+		flex-basis: auto;
+		flex-grow: 1;
+	}
+		#makeMargin{
+			justify-content: center;
+		}
+		#makeMargin button{
+			width: 100px;
+			margin: 0 1em;
+		}
+	#other{
+		flex-basis: 220px;
+	}
+	#saveFile{
+		flex-basis: 220px;
+	}
+}
+@media only screen and (min-width: 520px) and (max-width: 640px){
+	body{
+		width: 100%;
+	}
+	main{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+	fieldset{
+		width: 30%;
+	}
+	#makeMargin button{
+		width: 100px;
+	}
+}
+@media only screen and (min-width: 160px) and (max-width: 520px){
+	fieldset{
+		width: 100%;
+	}
+	body{
+		width: 100%;
+	}
+	#makeMargin button{
+		width: 100px;
+	}
+}
+
+@media only screen and (max-width: 160px){
+	body{
+		width: 120px;
+	}
+	fieldset{
+		width: 105px;
+	}
+	#makeMargin{
+		flex-direction: column;
+		padding: 0 0.3em;
+	}	
+	#makeMargin button{
+		width: 100%;
+	}
+	#otherFunction{
+		flex-direction: column;
+	}
+	#otherFunction button{
+		width: 80%;
+	}
+	#checkBoxParent{
+		flex-direction: column;
+		margin: 1em 0;
+	}
+	#checkBoxParent label{
+		font-size: 0.8em;
+	}
+	#btnGrSave{}
+		#btnSave{
+			width: 80%;
+		}
+}
+/* CSS for version text----*/
+.version h6{
+	margin: 0.5em .5em;
+	color: #686868;
+}

@@ -1,0 +1,164 @@
+body{
+	font-family: Myriad Pro;
+	width: 230px;
+	height: auto;
+	margin: 0 auto;
+	background-color: #4d4d4d;
+	overflow: scroll;
+	user-select: none;
+}
+::-webkit-scrollbar{
+	display: none;
+}
+	main{
+		width: 96%;
+		padding: 0 2%;
+	}
+		fieldset{
+			border: 1px solid #383838;
+			margin: .5em 0 0;
+			padding: .2em 0;
+		}
+			legend{
+				font-family: Segoe UI Symbol;
+				font-size: .6em;
+				font-weight: bold;
+				color: #b4b4b4;
+				margin-left: 1em;
+			}
+		#folderView{
+			position: relative;
+
+		}
+			#navFolder{
+				display: flex;
+				flex-direction: row;
+				padding: 0.5em 1em;
+				justify-content: space-between;
+				background-color: #4d4d4d;
+				position: sticky;
+				top : 0;
+			}
+				/* style SVG "back arrow"*/
+				#navFolder svg{
+					fill: #c1c1c1;
+					width: 25px;
+					height: 15px;
+					transition: .3s;
+				}
+				#navFolder svg:hover{
+					fill: #00a7a5;
+				}
+				#navFolder svg:active{
+					fill: #005958;
+				}
+				/*--------*/
+				#inpSearch{
+					width: 100px;
+					margin-left: 15px;
+					background-color: #414141;
+					color: #c4c4c4;
+					border: 1px solid #737373;
+					border-radius: 5px;
+				}
+					::placeholder{
+						font-size: .75em;
+					}
+				#grbtnMain{
+				}
+					#grbtnMain button{
+						outline: none;
+						border: 1px solid #c4c4c4;
+						background-color: #4d4d4d;
+						border-radius: 5px;
+						font-size: 0.75em;
+					}
+					#grbtnMain a{
+						text-decoration: none;
+						color: #c4c4c4;
+					}
+					#grbtnMain button:active{
+						background-color: #c4c4c4;
+					}
+					#grbtnMain button:active>a{
+						color: black;
+					}
+			/* ------------------LIST FOLDER ---------------------------*/
+			#listFolder{
+				list-style: none;
+				padding-left: 1em;
+				font-family: Segoe UI Symbol;
+				font-size: .75em;
+				margin: 0;
+			}
+				#listFolder li{
+					color: #cdcdcd;
+					display: inline-block;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					max-width: 180px;
+				}
+				#listFolder img{
+					width: 14px;
+					margin-right: 1em;
+				}
+					.divFolder{
+						padding: .15em 0;
+					}
+					.divFolder:hover{
+						cursor: default;
+						background: #828282 !important;
+					}
+						.contextMenu{
+							display: none;
+							background-color: #e6e6e6;
+							box-shadow: 2px 2px 8px #222222;
+						}
+							.contextMenu h5{
+								padding: .5em 1em;
+								margin: 0;
+								border-bottom: 1px solid #a1a1a1;
+							}
+							.contextMenu h5:hover{
+								background-color: #2470b7;
+								color: white;
+							}
+		#actionFolderTree{
+			display: none;
+		}
+			#navMain{
+				text-align: center;
+			}
+				#navMain a{
+					text-decoration: none;
+					color: white;
+					font-family: Segoe UI Symbol;
+					font-size: .75em;
+					border: 1px solid #c4c4c4;
+					display: inline-block;
+					padding: .3em 2em;
+					border-radius: 10px;
+					transition: .3s;
+				}
+	/* CSS for version text----*/
+	.version h6{
+		margin: 0.5em .5em;
+		color: #686868;
+	}
+/* --------- Responsive-------------*/
+@media only screen and (min-width: 640px) and (max-width: 1920px){
+	
+}
+@media only screen and (min-width: 520px) and (max-width: 640px){
+	
+}
+@media only screen and (min-width: 160px) and (max-width: 520px){
+	body{
+		width: 100%;
+	}
+}
+
+@media only screen and (max-width: 160px){
+	
+}

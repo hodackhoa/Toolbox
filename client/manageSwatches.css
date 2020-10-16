@@ -1,0 +1,160 @@
+body{
+}
+	.action-Btn:hover{
+		height: 14px;
+	}
+	main{
+		transition: 0.3s;
+	}
+	#manageSwatches{
+		position: relative;
+	}
+		#navBar{
+			display: flex;
+			justify-content: space-between;
+			background-color: #292151;
+			position: sticky;
+			top: 0;
+			padding: .3em 0;
+			z-index: 1;
+			transition: .3s;
+		}
+			#navBar h6{
+				margin: 0 0.5em;
+				color: #cacaca;
+				font-weight: bold;
+				font-style: italic;
+				transition: 0.3s;
+			}
+			#grActionSwatches{
+				display: flex;
+				justify-content: flex-end;
+			}	
+				#grActionSwatches img{
+					margin: 0 .3em;
+				}
+			#searchGr{
+				display: none;
+				position: absolute;
+				top:100%;
+				right:10px;
+				transition: 0.3;
+				justify-content: flex-end;
+				align-items: center;
+			}
+				#searchGr input{
+					width: 100px;
+					color: #217ec4;
+				}
+				#searchGr input::placeholder{
+					font-style: italic;
+					color: #217ec4;
+				}	
+		#swatchesCollection{
+			padding: .3em .3em;
+		}
+			#loadingGr{
+				display: none;
+				text-align: center;
+			}
+				#loadingGr h6{
+					color: #b6b6b6;
+					margin: .5em 0;
+					font-weight: normal;
+				}
+			.palette{
+				cursor: default;
+				padding: 0.1em 0;
+				border-bottom: 1px solid #414242;
+				border-radius: 5px;
+				transition: 0.3s
+			}	
+			.palette:hover >h6{
+				
+			}
+				.palette h6{
+					display: inline-block;
+					margin: 0 .5em;
+					padding: 0;
+					font-size: 0.7em;
+					color: #a7a7a7;
+					opacity: 0.7;
+					transition: 0.3s
+				}
+				.palette img{
+					height: 14px;
+					opacity: 0.7;
+				}
+				.contextMenu{
+					z-index: 2;
+					display: none;
+					background-color: #cecece;
+					box-shadow: 2px 2px 6px #222222;
+				}
+					.contextMenu h5{
+						padding: 0.3em 1em 0.1em 1em;
+						font-size: 0.65em;
+						margin: 0;
+					}
+					.contextMenu h5:hover{
+						background-color: #2470b7;
+						color: white;
+					}
+			#swatchesCollection svg{
+				width: 20px;
+				height: 20px;
+				transition: 0.3s;
+			}
+			#swatchesCollection svg:hover>path{
+				fill: #e7e7e7;
+			}
+				#menuSw{
+					display: none;
+					position: absolute;
+					background-color: white;
+					list-style: none;
+					font-size: 0.75em;
+					padding: 2px 2px;
+					cursor: default;
+					box-shadow: 2px 2px 6px #363636;
+				}
+				#menuSw li{
+					padding: .3em .5em;
+				}
+				#menuSw li:hover{
+					background-color: #3a60ad;
+					color: white;
+				}
+		#inforSwatches{
+			background-color: #4d4d4d;
+		}
+			#inforSwatches h6{
+				color: #cbcbcb;
+				font-weight: normal;
+				font-style: italic;
+				margin: 0.2em 1em;
+			}
+	#languageControl{
+		height: 25px;
+		margin: 0 1em;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+		#languageControl h4{
+			margin: 0 1em;
+			color: #7e7e7e;
+			font-size: .8em;
+			cursor: default;
+			transition: .3s;
+		}
+		#languageControl h4:hover{
+			color: #d5d5d5
+		}
+		#languageControl img{
+			opacity: 0.3;
+			transition: 0.3s;
+		}
+		#languageControl img:hover{
+			opacity: 1;
+		}

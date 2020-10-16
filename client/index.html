@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toolbox</title>
+    <link rel = "stylesheet" href="index.css">
+    <script type="text/javascript" src="mousetrap.min.js"></script>
+    <script type="text/javascript" src="CSInterface.js"></script>
+    <link rel="shortcut icon" type="image/png" href="LogoSAM.png"/>
+</head>
+<body>
+  <main>
+    <div id="menuPanel">
+      <img src="iconSVG/ellipsis-h-solid.svg" width="12" >
+      <ul id="listPanel">
+        <li data-content="index">Canvas Panel</li>
+        <li data-content="manageSwatches">Swatches</li>
+      </ul>
+    </div>
+    <fieldset id = 'templates'>
+      <legend>Process Canvas</legend>
+      <h4 id='timer'>00 : 00 : 00</h4>
+      <div id= "makeMargin">
+      </div>
+    	<div id='inforVariant'>
+    		<h5>Template:&ensp;<span></span></h5>
+    		<h4></h4>
+    	</div>
+    </fieldset>
+    <fieldset id='other'>
+      <legend>Other</legend>
+      <div id= 'otherFunction'>
+      	<button id= 'clrGuide'>Clr guides&nbsp;<span></span></button>
+        <button id='restoreHis'>History</button>
+      </div>
+      <!--<div id= 'checkBoxParent'>
+        <div style='display:none;'>
+          <input type="checkbox" id ='checkedBot' value ='bottomMargin'>
+          <label for='checkedBot' id ='labelCheckBot'>&ensp;Margin Bottom</label>
+        </div>
+        <h5 id= 'clrGuide'>&ensp;<a href="#"></a></h5>
+      </div>-->
+      <div id='extendsTool'>
+      	<div id='controlMenuTools'>
+      		<img src="iconSVG/ellipsis-h-solid.svg" width="12" >
+      		<ul id= 'menuTool'>
+      			<li data-content='shadowTools'>Shadow</li>
+      			<li data-content='pathTools'>Path</li>
+      		</ul>
+      	</div>
+      	<div id= 'shadowTools' class="groupTools">
+      		<button id='shadowBtn'>Shadow</button>
+      	</div>
+      	<div id= "pathTools" class="groupTools">
+      		<button id='makePathBtn'>Make Path</button>
+      	</div>
+      </div>
+      <div id= 'controlShowtimer'>
+        <h6 >:::</h6>
+      </div>
+    </fieldset>
+    <fieldset id= 'saveFile'>
+      <legend>Export</legend>
+      <div id= 'btnGrSave'>
+        <button id = 'btnSave'>Save</button>
+      </div>
+    </fieldset>
+    <fieldset>
+    	<legend>Option</legend>
+    	<div id= 'settingDir'>
+    		<div id ="grActionBtn">
+	    		<img src="iconSVG/cogs-solid.svg" height="15" id='settingConfig' class="action-Btn">
+	    		<img src="iconSVG/save-regular.svg" height="15" id='backupDataBtn' class="action-Btn">
+	    		<img src="iconSVG/trash-alt-solid.svg" height="15" id='deleteDataBtn' class="action-Btn">
+	      	<img src="iconSVG/folder-tree.svg" height="15" id='treeHandle' class="action-Btn">
+	      </div>
+        <div id='popupDir'>
+          <span></span>
+        </div>
+        </div>
+    </fieldset>
+    <div class="version">
+    	<h6 id='inforVersion'></h6>
+    </div>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>

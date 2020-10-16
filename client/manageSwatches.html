@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swatches Panel</title>
+    <link rel = "stylesheet" href="index.css">
+    <link rel = "stylesheet" href="manageSwatches.css">
+    <script type="text/javascript" src="mousetrap.min.js"></script>
+    <script type="text/javascript" src="CSInterface.js"></script>
+    <link rel="shortcut icon" type="image/png" href="LogoSAM.png"/>
+</head>
+<body>
+  <main>
+    <a id="updateLink" style="display: none;">Update</a>
+    <div id="menuPanel">
+      <img src="iconSVG/ellipsis-h-solid.svg" width="12">
+      <ul id="listPanel">
+        <li data-content="index">Canvas Panel</li>
+        <li data-content="manageSwatches">Swatches</li>
+      </ul>
+    </div>
+    <fieldset id=manageSwatches>
+      <legend>Swatches</legend>
+      <div id='navBar'>
+        <h6 id="inforStatus">Punch Project</h6>
+        <div id="grActionSwatches">
+          <img src="iconSVG/search-solid.svg" height="14" id='searchBtn' class="action-Btn">
+          <img src="iconSVG/plus-solid.svg" height="14" id='addSwatches' class="action-Btn">
+          <img src="iconSVG/folder-plus-solid.svg" height="14" id='addGrSw' class="action-Btn">
+          <img src="iconSVG/file-import-solid.svg" height="14" id='importData' class="action-Btn">
+          <img src="iconSVG/file-export-solid.svg" height="14" id='exportData' class="action-Btn">
+        </div>
+        <div id="searchGr">
+          <!--<img src="iconSVG/arrow-circle-left-solid.svg" height="14" id='prevSearch' class="action-Btn"> -->
+          <input type="text" placeholder="Search" id="searchInp" autofocus>
+          <img src="iconSVG/arrow-circle-right-solid.svg" height="14" id='nextSearch' class="action-Btn">
+        </div>
+      </div>
+      <div id='swatchesCollection'>
+        <div id="loadingGr">
+          <img src="images/loading.gif" height="40"><br>
+          <h6>Loading...</h6>
+        </div>
+        <div id="listPalette">
+        </div>
+      </div>
+      <div id ="inforSwatches">
+        <h6 id = "contentInfSw"></h6>
+      </div>
+      <ul id="menuSw">
+        <li id="delSwatch">Detele</li>
+        <li id="editSwatch">Edit</li>
+      </ul>
+      <div id='languageControl'>
+        <h4 id='convertLanguage'>EN</h4>
+        <img id="btnRenameTrans" src="iconSVG/language-solid.svg" height='25'>
+      </div>
+    </fieldset>
+    <div class="version">
+    	<h6 id='inforVersion'></h6>
+    </div>
+  </main>
+  <script type="text/javascript" src="manageSwatches.js"></script>
+  <script type="text/javascript" src="firebase.js"></script>
+</body>
+</html>
