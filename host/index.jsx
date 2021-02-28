@@ -24,7 +24,9 @@ function marginAuto(templateActive, variantObj, additBotMar, idRun, hasCloseDoc,
     var layerCrop = app.activeDocument.activeLayer;
     //-------------------------------------------------------------------------------
     // create layerMask if posible
-    if(variantObj.createMask || variantObj.canvasType != "None" || (mt+mb+ml+mr) != 0){createLayerMask(templateActive);}
+    if(variantObj.createMask || variantObj.canvasType != "None" || (mt+mb+ml+mr) != 0){
+        createLayerMask(templateActive);
+    }
     //-----------------------------------------------------------
     if(variantObj.canvasType != "None" || (mt+mb+ml+mr) != 0 ){
         if(variantObj.canvasType == "Ratio" || variantObj.canvasType  == "None"){
@@ -50,7 +52,6 @@ function marginAuto(templateActive, variantObj, additBotMar, idRun, hasCloseDoc,
             mt = parseInt((mt*ht/100).toFixed (0));
             mb = parseInt((mb*ht/100).toFixed (0));
         }
-
         var resMargin =  calculatorMargin(wd, ht, mt, mb, ml, mr, additBotMar, variantObj.canvasType);
         var arrbound = getBounds(docImg, layerCrop);
         for(var i=0; i<arrbound.length;i++){
@@ -65,19 +66,20 @@ function marginAuto(templateActive, variantObj, additBotMar, idRun, hasCloseDoc,
         canvasObj.left().right().top().bottom();
         //---------------------------------
         var k = 0;
-        for(var j=0; j<resMargin.marAfter.length;j++){
-            if(resMargin.marAfter[j] ==0){
-                k++;
-            }
+        for(var key in resMargin.marAfter){
+        	if(key == 0){
+        		k++;
+        	}
         }
-        if( (k > 2 && (resMargin.marAfter[0] + resMargin.marAfter[1]==0) && (resMargin.marAfter[2] + resMargin.marAfter[3]==0))
-          || ( (resMargin.marAfter[2] + resMargin.marAfter[3])==0 && checkWH(wd,ht) )
+        // check image Crop detail or full
+        if( (k > 2 && (resMargin.marAfter.mt + resMargin.marAfter.mb==0) && (resMargin.marAfter.ml + resMargin.marAfter.mr==0))
+          || ( (resMargin.marAfter.ml + resMargin.marAfter.mr)==0 && checkWH(wd,ht) && resMargin.arrSideHasCut[2] && resMargin.arrSideHasCut[3])
         ){
             cropImage(wd,ht);
         }
         else{
             var cutLR = false;
-            if(resMargin.marAfter[2] + resMargin.marAfter[3]==0){cutLR = true;}
+            if(resMargin.marAfter.ml + resMargin.marAfter.mr==0 &&  resMargin.arrSideHasCut[2] && resMargin.arrSideHasCut[3]){cutLR = true;}
             imageSize(resMargin.wd, resMargin.ht , docImg);
             canvasObj.arrBound = resMargin.arrbound;
             canvasObj.left().right().top().bottom();
@@ -109,10 +111,10 @@ function marginAuto(templateActive, variantObj, additBotMar, idRun, hasCloseDoc,
             }
             // Run after ----------
             if(variantObj.position == "Bottom"){
-                afterCanvasBot(arrbound, resMargin.marAfter[0], resMargin.marAfter[1], resMargin.marAfter[2], resMargin.marAfter[3]);
+                afterCanvasBot(arrbound, resMargin.marAfter.mt, resMargin.marAfter.mb, resMargin.marAfter.ml, resMargin.marAfter.mr, resMargin.arrSideHasCut);
             }
             else{
-                afterCanvasCen(arrbound, resMargin.marAfter[0], resMargin.marAfter[1], resMargin.marAfter[2], resMargin.marAfter[3], variantObj.position);
+                afterCanvasCen(arrbound, resMargin.marAfter.mt, resMargin.marAfter.mb, resMargin.marAfter.ml, resMargin.marAfter.mr, variantObj.position, resMargin.arrSideHasCut);
             }
             //scale image fit to canvas
             if(cutLR){
@@ -122,13 +124,13 @@ function marginAuto(templateActive, variantObj, additBotMar, idRun, hasCloseDoc,
                     layerCrop.resize(perCut, perCut, AnchorPosition.MIDDLERIGHT);
                 }
             }
-            
             //add guide ------------------------------
             if(app.activeDocument.guides.length > 0){runMenuItem(app.charIDToTypeID("ClrG"));}
-            docImg.guides.add(Direction.HORIZONTAL, resMargin.marAfter[0]);
-            docImg.guides.add(Direction.HORIZONTAL, docImg.height- resMargin.marAfter[1]);
-            docImg.guides.add(Direction.VERTICAL, resMargin.marAfter[2]);
-            docImg.guides.add(Direction.VERTICAL, docImg.width - resMargin.marAfter[3]);
+            //alert(resMargin.marAfter[0]);
+            docImg.guides.add(Direction.HORIZONTAL, resMargin.marAfter.mt);
+            docImg.guides.add(Direction.HORIZONTAL, docImg.height- resMargin.marAfter.mb);
+            docImg.guides.add(Direction.VERTICAL, resMargin.marAfter.ml);
+            docImg.guides.add(Direction.VERTICAL, docImg.width - resMargin.marAfter.mr);
         }
         ////------------
         if(onOffLayerMask(null, true) ) {selectMaskChannel();}
@@ -204,13 +206,15 @@ function checkWH(wd, ht){
    return ( docImgH/docImgW> ht/wd)? true : false;
 };
 function calculatorMargin(wd,ht, mt,mb,ml,mr, additBotMar, canvasType){
-    var marAfter = checkBounds(mt,mb,ml,mr); 
+    var resCheckMargins = checkBounds(mt,mb,ml,mr);
+    var marAfter = resCheckMargins.marginAfter; 
+    var arrSideHasCut = resCheckMargins.arrSideHasCut;
     marAfter.mb = (additBotMar)? marAfter.mb : 0;
     afterWd = wd - (marAfter.ml + marAfter.mr);
     afterHt = ht - (marAfter.mt + marAfter.mb);
     var arrbound = [((afterWd+marAfter.mr)+marAfter.ml), ((afterHt+marAfter.mb)+ marAfter.mt),(afterWd+marAfter.mr),(afterHt+marAfter.mb)];
     progressBox.setValue(20, "Calculating margin");
-    return {wd : afterWd, ht : afterHt, arrbound: arrbound, marAfter : [marAfter.mt, marAfter.mb, marAfter.ml, marAfter.mr]};
+    return {wd : afterWd, ht : afterHt, arrbound: arrbound, marAfter : marAfter, arrSideHasCut: arrSideHasCut};
 }
 
 function getBounds(docImg, layerCrop){
@@ -253,80 +257,80 @@ function getBounds(docImg, layerCrop){
 
 function imageSize(wd, ht, docImg){
     var min, max ;
-     if(wd>ht){
+    if(wd>ht){
             max = ht;  min = null; 
-           if(docImg.width>docImg.height){
-               checkside = docImg.width*max/docImg.height;
-               if(checkside > wd){
-                    min = wd;  max = null;
-                  }
+           	if(docImg.width>docImg.height){
+               	checkside = docImg.width*max/docImg.height;
+               	if(checkside > wd){
+                	min = wd;  max = null;
+                }
             }
-      }
+    }
     if(wd<ht){
         min = wd;  max = null;
         if(docImg.width<docImg.height){
             checkside = docImg.height*min/docImg.width;
             if(checkside > ht){
                 max = ht;  min = null;
-                }
+            }
           }
-      }
-       if(wd==ht){
-           max = wd; min=null;
-           if(docImg.width>docImg.height){
-               max = null ; min=wd;
-           }
-       }
-     docImg.resizeImage(min, max);
-     progressBox.setValue(40, "Image size");
+    }
+	if(wd==ht){
+        max = wd; min=null;
+        if(docImg.width>docImg.height){
+            max = null ; min=wd;
+        }
+    }
+    docImg.resizeImage(min, max);
+    progressBox.setValue(40, "Image size");
  };
 // aftercanvas CENTER ---------------
-function afterCanvasCen(arrbound, mt,mb, ml, mr, position){
+function afterCanvasCen(arrbound, mt,mb, ml, mr, position, arrSideHasCut){
     var docImg = app.activeDocument;
     var wd = parseInt(docImg.width.toString().replace(" px",""));
     var ht = parseInt(docImg.height.toString().replace(" px",""));
     var hasCenterVertical = false, hasCenterHorizon=false;
-    if(mb == 0 && !hasCenterHorizon){
+    if(mb == 0 && !hasCenterHorizon && arrSideHasCut[1]){
         if(ht - (arrbound[3] -1) != mb){
             if(ht - arrbound[3] != mb){
-                 fixCanvas = (arrbound[3]-1)+mb;
-                 docImg.resizeCanvas( wd, fixCanvas, AnchorPosition.TOPCENTER);
-                 docImg.resizeCanvas(wd, ht, AnchorPosition.BOTTOMCENTER);
+                fixCanvas = (arrbound[3]-1)+mb;
+                docImg.resizeCanvas( wd, fixCanvas, AnchorPosition.TOPCENTER);
+                docImg.resizeCanvas(wd, ht, AnchorPosition.BOTTOMCENTER);
             }
         }
-        if(ml !=0 && mr !=0){
+        if(!arrSideHasCut[2] && !arrSideHasCut[3]){
             centerHorizon(wd, ht, arrbound, mt,mb, ml, mr);
             hasCenterHorizon = true;
         }
     }      
     
-    if(mr==0 && !hasCenterVertical){
+    if(mr==0 && !hasCenterVertical && arrSideHasCut[3]){
         if(wd - (arrbound[2] -1) != mr){
             if(wd - arrbound[2] != mr){
                 fixCanvas = (arrbound[2]-1)+mr;
                 docImg.resizeCanvas(fixCanvas, ht, AnchorPosition.MIDDLELEFT);
                 docImg.resizeCanvas(wd, ht, AnchorPosition.MIDDLERIGHT);
-                }
             }
-        if(mt != 0 && mb !=0 && position == "Center"){
+        }
+        if(!arrSideHasCut[0] && !arrSideHasCut[1] && position == "Center"){
             centerVertical(wd, ht, arrbound, mt,mb, ml, mr);
             hasCenterVertical = true;
         }
      }
-    if(ml == 0 && !hasCenterVertical){
+    if(ml == 0 && !hasCenterVertical && arrSideHasCut[2]){
         if(arrbound[0] +1 != ml){
             if(arrbound[0] !=ml){
                 fixCanvas = wd - ((arrbound[0]+1)-ml);
                 docImg.resizeCanvas(fixCanvas, ht, AnchorPosition.MIDDLERIGHT);
                 docImg.resizeCanvas(wd, ht, AnchorPosition.MIDDLELEFT);
-                }
             }
-        if(mt != 0 && mb !=0 && position == "Center"){
+        }
+        if(!arrSideHasCut[0] && !arrSideHasCut[1] && position == "Center"){
             centerVertical(wd, ht, arrbound, mt,mb, ml, mr);
             hasCenterVertical = true;
         }
-     }
-    if(mt == 0 && !hasCenterHorizon){
+    }
+    if(mt == 0 && !hasCenterHorizon && arrSideHasCut[0]){
         if(arrbound[1] +1 != mt){
             if(arrbound[1] != mt){
                 fixCanvas = ht - ((arrbound[1]+1)-mt);
@@ -334,12 +338,12 @@ function afterCanvasCen(arrbound, mt,mb, ml, mr, position){
                 docImg.resizeCanvas(wd, ht, AnchorPosition.TOPCENTER);
            	}
         }
-        if(ml !=0 && mr !=0){
+        if(!arrSideHasCut[2] && !arrSideHasCut[3]){
             centerHorizon(wd, ht, arrbound, mt,mb, ml, mr);
             hasCenterHorizon=true;
         }
     }
-    if(mb!=0 && mt!=0 && ml != 0 && mr!=0 && position == "Center"){
+    if(!arrSideHasCut[0] && !arrSideHasCut[1]&& !arrSideHasCut[2] && !arrSideHasCut[3] && position == "Center"){
     	centerHorizon(wd, ht, arrbound, mt,mb, ml, mr);
     	centerVertical(wd, ht, arrbound, mt,mb, ml, mr);
     }
@@ -347,11 +351,11 @@ function afterCanvasCen(arrbound, mt,mb, ml, mr, position){
 };
 
 //after canvas Bottom--------
-function afterCanvasBot(arrbound, mt,mb, ml, mr){
+function afterCanvasBot(arrbound, mt,mb, ml, mr, arrSideHasCut){
     var docImg = app.activeDocument;
     var wd = parseInt(docImg.width.toString().replace(" px",""));
     var ht = parseInt(docImg.height.toString().replace(" px",""));
-    if(mt != 0){
+    if(!arrSideHasCut[0]){
         if(ht - (arrbound[3] -1) != mb){
             if(ht - arrbound[3] != mb){
                  fixCanvas = (arrbound[3]-1)+mb;
@@ -364,7 +368,7 @@ function afterCanvasBot(arrbound, mt,mb, ml, mr){
         }
     }      
     
-    if(mr==0){
+    if(arrSideHasCut[3]){
         if(wd - (arrbound[2] -1) != mr){
             if(wd - arrbound[2] != mr){
                 fixCanvas = (arrbound[2]-1)+mr;
@@ -374,7 +378,7 @@ function afterCanvasBot(arrbound, mt,mb, ml, mr){
             }
         //centerVertical(wd, ht);
      }
-    if(ml == 0){
+    if(arrSideHasCut[2]){
         if(arrbound[0] +1 != ml){
             if(arrbound[0] !=ml){
                 fixCanvas = wd - ((arrbound[0]+1)-ml);
@@ -384,18 +388,18 @@ function afterCanvasBot(arrbound, mt,mb, ml, mr){
             }
         //centerVertical(wd, ht);
      }
-     if(mt == 0){
-         if(arrbound[1] +1 != mt){
-             if(arrbound[1] != mt){
-                fixCanvas = ht - ((arrbound[1]+1)-mt);
-                docImg.resizeCanvas(wd, fixCanvas, AnchorPosition.BOTTOMCENTER);
-                docImg.resizeCanvas(wd, ht, AnchorPosition.TOPCENTER);
-                }
-            }
-         if(ml !=0 && mr !=0){
-            centerHorizon(wd, ht, arrbound, mt,mb, ml, mr);
-        }
-     }
+     // if(arrSideHasCut[0]){
+     //     if(arrbound[1] +1 != mt){
+     //         if(arrbound[1] != mt){
+     //            fixCanvas = ht - ((arrbound[1]+1)-mt);
+     //            docImg.resizeCanvas(wd, fixCanvas, AnchorPosition.BOTTOMCENTER);
+     //            docImg.resizeCanvas(wd, ht, AnchorPosition.TOPCENTER);
+     //            }
+     //        }
+     //     if(ml !=0 && mr !=0){
+     //        centerHorizon(wd, ht, arrbound, mt,mb, ml, mr);
+     //    }
+     // }
     progressBox.setValue(60, "Canvas again");
 }
 function centerHorizon(wd,ht, arrbound, mt,mb, ml, mr){
@@ -419,12 +423,13 @@ function centerVertical(wd, ht, arrbound, mt,mb, ml, mr){
 function checkBounds(mt, mb, ml, mr){
     var bounds = app.activeDocument.activeLayer.bounds;
     var docSize = app.activeDocument;
+    var arrSideHasCut =[false, false, false, false];
     var marginAfter = {mt: mt, mb: mb, ml: ml, mr: mr};
-    if(bounds[0] == 0){ marginAfter.ml = 0;}
-    if(bounds[1] == 0){marginAfter.mt = 0;}
-    if(bounds[2] == docSize.width){marginAfter.mr = 0;}
-    if(bounds[3] == docSize.height){marginAfter.mb = 0;}
-    return marginAfter;
+    if(bounds[0] == 0){ marginAfter.ml = 0; arrSideHasCut[2]=true;}
+    if(bounds[1] == 0){marginAfter.mt = 0; arrSideHasCut[0]=true;}
+    if(bounds[2].toString() == docSize.width.toString()){marginAfter.mr = 0; arrSideHasCut[3]=true;}
+    if(bounds[3].toString() == docSize.height.toString()){marginAfter.mb = 0; arrSideHasCut[1]=true;}
+    return {marginAfter: marginAfter,  arrSideHasCut :arrSideHasCut };
  };
 function cropImage(wd, ht){
     var docImg = app.activeDocument;
@@ -567,10 +572,10 @@ function createLayerMask(templateActive){
         docSize.artLayers[docSize.artLayers.length - 1].isBackgroundLayer = false;
         makeMask();
         productLayer.name = "Product";
-        makeSolidColor("WhiteBG", 255,255,255);
+        makeSolidColor("WhiteBG", 255,255,255, undefined,false);
         var bgWhite =  docSize.artLayers.getByName("WhiteBG");
         bgWhite.move(productLayer, ElementPlacement.PLACEAFTER);
-        docSize.activeLayer = productLayer;
+        app.activeDocument.activeLayer = productLayer;
     } 
 }
 //--------------------------------
@@ -961,6 +966,8 @@ function makeShadow(desaturation){
     if(desaturation){
         shadowLayer.desaturate();
     }
+    //close infor panel
+    app.runMenuItem(stringIDToTypeID ("closeInfoPanel"));
 };
 function makePath(){
     var docImg = app.activeDocument;
@@ -1619,7 +1626,7 @@ function boxMessage(data){
         tabInp.active = true;
     }
     // panel profile-------------
-    if(data.listObj !=undefined||data.inputObj !=undefined){
+    if(data.listObj !=undefined||data.inputObj !=undefined || data.checkBoxObjs != undefined){
         var panelProfile = boxMsg.add("panel{text: 'Properties', orientation: 'column', alignment: 'center'}");
         panelProfile.alignChildren = "left";
     }
@@ -1632,6 +1639,7 @@ function boxMessage(data){
         }
         var activeItem=(data.listObj.selectedItem==undefined)? data.listObj.arrItems[0] : data.listObj.selectedItem;
         listItem.find (activeItem).selected = true;
+        response.selectedItem = activeItem;
         listItem.onChange = function(){
             response.selectedItem = this.selection.toString();
         }
@@ -1645,15 +1653,12 @@ function boxMessage(data){
             var labelInp = grInp.add("statictext{text:'"+data.inputObj[i].name+"'}");
             data.inputObj[i].value=(data.inputObj[i].value==undefined)? "" : data.inputObj[i].value;
             var inpTemp = grInp.add("edittext{characters: 3, text:'"+data.inputObj[i].value+"', index:'"+i+"', maximumSize: [200,20]}");
+            //-----
             if(data.inputObj[i].btnName != undefined){
-                var btnInp = grInp.add("button{text:'"+data.inputObj[i].btnName+"', size:[60,20],  index:'"+i+"', properties:{name: 'cancel'}}");
+                var btnInp = grInp.add("button{text:'"+data.inputObj[i].btnName+"', size:[60,20],  index:'"+i+"' , properties:{name: 'cancel'}}");
                 btnInp.onClick = function(){
-                    data.inputObj[this.index].responseBtn = processImgUpload();
+                    data.inputObj[this.index].responseBtn = processImgUpload(data.inputObj[this.index].value, data.inputObj[this.index].name);
                     panelProfile.enabled = false;
-                    /*processImgUpload(function(res){
-                        data.inputObj[this.index].responseBtn = res;
-                        panelProfile.enabled = false;
-                    });*/
                 }
             }
             //
@@ -1881,14 +1886,16 @@ function settingDirectory(dataStore){
     
     return dataStore;
 }
-function addSwatches(dataBoxMsg, rgbOld, paletteActive){
+function addSwatches(dataBoxMsg, rgbOld, paletteActive, objNewSwSender){
     #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
     //var docImg = app.activeDocument;
     if(paletteActive != undefined){paletteActive = paletteActive.value;}
-    if(paletteActive=="null"){
+    if(paletteActive===null){
         alert("Choose palette to add swatches", "Warning");
         return;
     }
+    // send name swatch-- get from preview panel
+    dataBoxMsg.inputText = (objNewSwSender!= undefined)? objNewSwSender.nameSwatch : dataBoxMsg.inputText;
     var responseMsg = boxMessage(dataBoxMsg);
     responseMsg = JSON.parse(responseMsg);
     var myColor = "";
@@ -1898,12 +1905,27 @@ function addSwatches(dataBoxMsg, rgbOld, paletteActive){
             mySolid.rgb.hexValue = rgbOld.hexValue;
             app.foregroundColor = mySolid;
         }
-        var colorPicker = app.showColorPicker();
-        if(colorPicker){
-            myColor = app.foregroundColor.rgb;
+        //-----------
+        if(objNewSwSender == null){
+            var colorPicker = app.showColorPicker();
+            if(colorPicker){
+                myColor = app.foregroundColor.rgb;
+                myColor.red = parseInt(myColor.red.toFixed());
+                myColor.red = (myColor.red > 255) ? 255 : myColor.red;
+                myColor.green = parseInt(myColor.green.toFixed());
+                myColor.green = (myColor.green > 255) ? 255 : myColor.green;
+                myColor.blue = parseInt(myColor.blue.toFixed());
+                myColor.blue = (myColor.blue > 255) ? 255 : myColor.blue;
+            }
+        }
+        else{
+            myColor = new RGBColor();
+            myColor.red = objNewSwSender.rgbPosition[0];
+            myColor.green = objNewSwSender.rgbPosition[1];
+            myColor.blue = objNewSwSender.rgbPosition[2];
         }
     }
-    return (myColor=="")? "" : JSON.stringify({rgbObj: myColor, inforSw: responseMsg.tabInp, blendMode:responseMsg.selectedItem, opacity: responseMsg.inputObj[0].value, clippingMask: responseMsg.checkBoxObjs[0].value});
+    return (myColor=="")? "" : JSON.stringify({rgbObj: myColor, inforSw: responseMsg.tabInp, blendMode:responseMsg.selectedItem, opacity: responseMsg.inputObj[0].value, clippingMask: responseMsg.checkBoxObjs[0].value, invertMask: responseMsg.checkBoxObjs[1].value});
 }
 function changeForeground(data){
     var newSolid = new SolidColor;
@@ -1967,38 +1989,115 @@ function getMACAddress(){
 function messageOnly(msg,titleMsg){
     alert(msg, titleMsg);
 }
-function installToolbox(data){
-    var logFile = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/StatusUpdate.log");
-    var folderCache = new Folder("~/AppData/Local/Temp/cep_cache/PHXS_"+app.version+"_com.sam.toolbox.panel/Cache");
-    // detele toolbox old---
-    var  exeFiles = folderCache.getFiles("*.exe");
-    for(var i=0;i<exeFiles.length;i++){
-        exeFiles[i].remove();
-    };
-    //---------------
-    if(data == "CheckLog"){
-        logFile.open("r");
-        var logver = logFile.read();
-        logFile.close();
-        return logver;
+function updateToolbox(url, version){
+    var res = "";
+    var logFile = new File("~/AppData/Roaming/Adobe/CEP/extensions/logUpdate.log");
+    logFile.open("w");
+    logFile.write(url);
+    logFile.close();
+    var logVer = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/version.log");
+    logVer.open("r");
+    var versionOld = logVer.read();
+    logVer.close();
+    if(versionOld != version){
+        var boxInfUpdate = new Window("dialog", "Update Toolbox", undefined, {closeButton:true});
+        boxInfUpdate.add("statictext{text: 'New version "+version+" available!' }");
+        var grBtn = boxInfUpdate.add("group");
+        var btnOk = grBtn.add("button{text:'Update', size:[100,20], properties:{name:'ok'}}");
+        var btnCancel=grBtn.add("button{text:'Later', size:[100,20], properties:{name:'cancel'}}");
+        //handle btn update
+        btnOk.onClick = function(){
+            boxInfUpdate.close();
+            processUpdate();
+        }
+        boxInfUpdate.show();
+        //------------------------------------------
     }
-    else{
-        var allFiles = folderCache.getFiles();
-        for(var i=0;i<allFiles.length;i++){
-            if(allFiles[i].length == data){
-                allFiles[i].rename("Toolbox.exe");
-                allFiles[i].execute();
+    //---
+    function processUpdate(){    
+        //processSave();
+        //executeAction(charIDToTypeID('quit'), undefined, DialogModes.NO);
+        var fileExe = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/UpdateToolbox.exe");
+        var fileExeCopy = new File("~/AppData/Roaming/Adobe/CEP/extensions/UpdateToolbox.exe");
+        fileExe.copy(fileExeCopy);
+        fileExeCopy.execute();
+        var k= 0;
+        while(versionOld != version){
+            if(k>30){
                 break;
             }
+            logVer.open("r");
+            versionOld = logVer.read();
+            logVer.close();
+            $.sleep (1000);
+            k++;
+        }
+        $.sleep(2000);
+        // write logfile 
+        var logImg = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.previewImage.panel/linkImg.log");
+        logImg.open("w");
+        logImg.write("Reload Toolbox");
+        logImg.close();
+        res = "Success";
+    }
+    function processSave(){
+        var psdRef = new PhotoshopSaveOptions();
+        psdRef.alphaChannel = true;
+        psdRef.embedColorProfile = true;
+        // save all documents
+        var myDoc = app.activeDocument;
+        if(!myDoc.saved){
+            try{
+                var sourceFile = myDoc.fullName.fullName;
+                var dirSource = sourceFile.split("/");
+                dirSource.pop();
+                dirSource = dirSource.join("/");
+                //
+                var arrName = myDoc.name.split(".");
+                var fileType = arrName.pop().toLowerCase();
+                var fileName = arrName.join(".");
+                if(fileType =="psd"){
+                    myDoc.save();
+                }
+                else{
+                    var filePsd = new File(dirSource +"/"+ fileName+".psd");
+                    myDoc.saveAs(filePsd, psdRef, true);
+                }
+            }
+            catch(err){
+                var filePsd = new File("~/Documents/"+ myDoc.name+".psd");
+                myDoc.saveAs(filePsd, psdRef, true);
+            }
+        }
+        myDoc.close(SaveOptions.DONOTSAVECHANGES);
+        if(app.documents.length>0){
+            processSave();
         }
     }
+    return res;
 };
+function getVersionInfo(){
+    var logVer = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/version.log");
+    logVer.open("r");
+    var ver = logVer.read();
+    logVer.close();
+    // remove updatetoolbox.exe
+    var fileExe = new File("~/AppData/Roaming/Adobe/CEP/extensions/UpdateToolbox.exe");
+    if (fileExe.exists) fileExe.remove();
+    var fileZip = new File("~/AppData/Roaming/Adobe/CEP/extensions/UpdateToolbox.zip");
+    if (fileZip.exists) fileZip.remove();
+    return ver;
+}
 //------Function updatePanel
-function reloadPanel (Name, linkImg) {
+function reloadPanel (Name, linkImg , dirChild, objThrow, language) {
     //send link to panel preview----
     var logImg = new File("~/AppData/Roaming/Adobe/CEP/extensions/com.previewImage.panel/linkImg.log");
+    logImg.encoding= "utf-8";
     logImg.open("w");
-    logImg.write(linkImg);
+    dirChild = (dirChild==undefined)? "" :  ("*"+dirChild);
+    language = (language==undefined)? "" :  ("*"+language);
+    objThrow = (objThrow==undefined)? "" : ("*"+objThrow);
+    logImg.write(linkImg + dirChild +objThrow+language);
     logImg.close();
     //////
     var Vis = false;
@@ -2050,9 +2149,9 @@ function loadDataManual(){
     var obj = {dataPalette: dataPalette, dataTranslate: dataTranslate};
     return JSON.stringify(obj);
 };
-function addDataTranslate(obj, language){
+function addDataTranslate(obj, dataTranslate, language){
     #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
-    var response = null;
+    var response = {};
     var boxNewName = new Window("dialog{text:'New object', properties:{closeButton:true}}");
     var grEn = boxNewName.add("group{orientation: 'row'}");
     var labelEn = grEn.add("statictext{text:'English', preferredSize:[80,-1]}");
@@ -2072,19 +2171,48 @@ function addDataTranslate(obj, language){
         if(arrIpn[i].children[1] != undefined){
             arrIpn[i].children[1].text = obj[arrIpn[i].children[1].name];
             if(arrIpn[i].children[1].name == language){
-                arrIpn[i].children[1].enabled = false;
-                break;
+            	arrIpn[i].children[1].active = true;
+                //arrIpn[i].children[1].enabled = false;
+                //break;
+            }
+            //handle onchange
+            var objTrans = {};
+            objTrans[language] = obj[language];
+            arrIpn[i].children[1].onChange = function(){
+                obj = objTrans;
+                if(objTrans[this.name]=="" || objTrans[this.name]==undefined){
+                    obj[this.name] = this.text;
+                    objTrans[this.name] = this.text;
+                }
+                else{
+                    obj[this.name] = objTrans[this.name];
+                }
+            }
+            arrIpn[i].children[1].onChanging = function(){
+                if(this.name == language){
+                    for(var j=0; j<dataTranslate.length; j++){
+                        if( dataTranslate[j].en.toLowerCase()==this.text.toLowerCase()||
+                             dataTranslate[j].vn.toLowerCase()==this.text.toLowerCase()||
+                             dataTranslate[j].jp.toLowerCase()==this.text.toLowerCase()
+                        ){               
+                            objTrans = dataTranslate[j];
+                            response.hasExists = true;
+                            break;
+                        }
+                        else{
+                            objTrans = {en:"",vn:"", jp:""};
+                            response.hasExists = false;
+                        }                                 
+                    }
+                    for(var k=0;k<arrIpn.length; k++){
+                        if(arrIpn[k].children[1].name != this.name){
+                            arrIpn[k].children[1].text = objTrans[arrIpn[k].children[1].name];
+                            arrIpn[k].children[1].enabled=(objTrans[arrIpn[k].children[1].name] != "")? false:true;
+                        }
+                    }
+                }
             }
         }
-    }
-    inpEn.onChange = function(){
-        obj.en = this.text;
-    }
-    inpJp.onChange = function(){
-        obj.jp = this.text;
-    }
-    inpVn.onChange = function(){
-        obj.vn = this.text;
     }
     
     btnOk.onClick = function(){
@@ -2092,7 +2220,7 @@ function addDataTranslate(obj, language){
             alert("Fields cannot be empty", "Error");
         }
         else{
-            response = obj;
+            response.data = obj;
             boxNewName.close();
         }
     };
@@ -2103,7 +2231,7 @@ function addDataTranslate(obj, language){
     
     return JSON.stringify(response);
 };
-function renameLayes(dataTranslate, language, punchEndPoints){
+function renameLayes(dataTranslate, language){
     #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
     var doc = app.activeDocument;
     var arrLayers = doc.layers;
@@ -2120,7 +2248,6 @@ function renameLayes(dataTranslate, language, punchEndPoints){
     listTranslate.add("item", "JP to VN");
     listTranslate.add("item", "VN to JP");
     listTranslate.add("item", "VN to EN");
-    var btnServer = grListTrans.add("button{text:'Server',size:[50,20], properties: {name:'cancel'}}");
     var grBtn = mybox.add("group");
     var btnRename = grBtn.add("button{size:[80,20],text:'Rename', properties: {name:'ok'}}");
     var btnViewData = grBtn.add("button{size:[80,20],text:'Data', properties: {name:'cancel'}}");
@@ -2130,37 +2257,6 @@ function renameLayes(dataTranslate, language, punchEndPoints){
     }
     else{
         listTranslate.find (language + " to EN").selected = true;
-    }
-    //handle btn server
-    btnServer.onClick= function(){
-        var boxServer = new Window("dialog{text:'Servers', properties:{closeButton: true}}");
-        var panelServer = boxServer.add("panel{text:'Endpoints'}");
-        var grRadioBtn = panelServer.add("group");
-        grRadioBtn.orientation = "column";
-        grRadioBtn.alignChildren="left";
-        var newIndex = punchEndPoints.activedServer;
-        for(var i=0;i<punchEndPoints.data.length; i++){
-            var radioBtn = grRadioBtn.add("radiobutton{text:'"+punchEndPoints.data[i].projectId+"', value: false, index:"+i+"}");
-            if(punchEndPoints.activedServer == i){
-                radioBtn.value = true;
-            }
-            radioBtn.onClick = function(){
-                newIndex = this.index;
-            }
-        }
-        var btnOk = boxServer.add("button{size:[80,20],text:'OK', properties: {name:'ok'}}");
-        btnOk.onClick = function(){
-            if(newIndex != punchEndPoints.activedServer){
-                punchEndPoints.activedServer = newIndex;
-                response.punchEndPoints = punchEndPoints;
-            }
-            boxServer.close();
-        }
-        boxServer.onClose = function(){
-            mybox.close();
-            app.bringToFront();
-        }
-        boxServer.show();
     }
     //handle Button Rename
     btnRename.onClick = function(){
@@ -2466,7 +2562,10 @@ function renameLayes(dataTranslate, language, punchEndPoints){
     return (response.dataTranslate!=undefined || response.punchEndPoints!=undefined)? JSON.stringify(response) : null;
 };
 //---Process Image Upload
-function processImgUpload(){
+function processImgUpload(quality, mode){
+    app.preferences.rulerUnits = Units.PIXELS;
+    app.preferences.typeUnits = TypeUnits.PIXELS;
+    quality = (isNaN(quality) || quality > 12 || quality < 0)?  6 : parseInt(quality);
     //process selection
     var doc = app.activeDocument;
     var hisBack = doc.activeHistoryState;
@@ -2475,6 +2574,13 @@ function processImgUpload(){
         doc.crop(bounds);
     }
     catch(err){}
+    // resize Image
+    if(mode == "Thumbnail"){
+        var res = null, res2=150;
+        if(doc.width<doc.height){res = 150; res2 = null;}
+        doc.resizeImage(res, res2);
+        doc.resizeCanvas(res2, res, AnchorPosition.MIDDLECENTER);
+    }
     //----------------
     var date = new Date();
     var nameFile = date.toGMTString().match(/\d/g).join("");
@@ -2492,12 +2598,238 @@ function processImgUpload(){
     var fileUp = new File(strFolder +"/" + nameFile + ".jpg");
     var refJPG = new JPEGSaveOptions();
     refJPG.formatOptions = FormatOptions.OPTIMIZEDBASELINE;
-    refJPG.quality = 6;
+    refJPG.quality = quality;
     doc.saveAs(fileUp, refJPG, true, Extension.LOWERCASE);
     doc.activeHistoryState = hisBack;
     return nameFile;
+};
+
+function progressBox(data, msg, balanceValue){
+    var percentVal =0, eachValue = 0;
+    var mybox = new Window("palette{text: 'Progress', properties: {closeButton: true}, spacing: 3}");
+    var grLabel = mybox.add("group{orientation: 'column', margins: 0, spacing: 0}");
+    var label = grLabel.add("statictext{text: '"+msg+"', preferredSize : [500,-1], justify: 'left'}");
+    var labelPercent = grLabel.add("statictext{text: "+percentVal+" + '%', size: [40,15], justify: 'center', }");
+    var panelForBar = mybox.add("panel{margins :0}");
+    var bar = panelForBar.add("progressbar{value:0, maxvalue: "+data+", preferredSize: [500, 20]}");
+    
+    progressBox.increaseBar = function(){
+        bar.value++
+    }
+    progressBox.setValue = function(val, msg){
+        bar.value = eachValue + (val * balanceValue)/100;
+        labelPercent.text = bar.value.toFixed (1) + "%";
+        label.text = msg;
+        if(val == 100){
+            if(bar.value==100){
+                $.sleep (100);
+                mybox.close();
+            }
+            else{
+                eachValue = bar.value;
+            }
+        }
+    }
+    progressBox.message = function(msg){
+        label.text = msg;
+    }
+    progressBox.percentIncrease= function(percentVal){
+        labelPercent.text = percentVal;
+    }
+    progressBox.status = function(){
+        return  (mybox.active)? true : false;
+    }
+    if(!mybox.active){
+        mybox.show();
+    }
+};
+function syncDataExtension(){
+    var messageLog = new File('~/AppData/Roaming/Adobe/CEP/extensions/com.previewImage.panel/messageLog.log');
+    messageLog.open('r');
+    var res = messageLog.read();
+    messageLog.close();
+    messageLog.remove();
+    return res;
+};
+// View Palettes Hide --------
+function showPalettesHide(hidePalettesData, language){
+    #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
+     var boxPalettesHide = new Window("dialog{text:'Palettes Hidden', properties:{closeButton:true}}");
+     if(hidePalettesData.length == 0){
+        boxPalettesHide.add("statictext{text:'No hidden palettes'}");
+     }
+     var panelListPalettes = boxPalettesHide.add("panel{orientation: 'column', spacing: 5}");
+     panelListPalettes.alignChildren = "left";
+     //call view----
+     var hierachy = 0, arrRes = [];
+     viewHide(hidePalettesData, panelListPalettes);
+     function viewHide(arrData, element, arrUrl){
+        for(var i = 0; i< arrData.length; i++){
+            var newArr = (arrUrl== undefined)? [] : arrUrl;
+            newArr.push(arrData[i].index);
+            var url =  newArr.join("/data/");
+            var group_1 = element.add("group{orientation: 'column', alignChildren: 'left', margins: ["+hierachy*10+",0,0,0], spacing: 0}");
+            var myCheckbox = group_1 .add("checkbox{text: '"+arrData[i].name[language]+"', value: "+arrData[i].hasHidden+",  url: '"+url+"'}");
+            if(arrData[i].data != undefined && arrData[i].data.length>0){
+                hierachy++;
+                viewHide(arrData[i].data, group_1, newArr);
+            }
+            if(i == (arrData.length - 1)){
+                hierachy--;
+            }
+            myCheckbox.onClick = function(){
+                hasFound = false;
+                for(var j=0; j< arrRes.length; j++){
+                    if(arrRes[j].url == this.url){
+                        arrRes.splice (j, 1);
+                        hasFound = true;
+                        break;
+                    }
+                }
+                if(!hasFound){
+                    arrRes.push({url: this.url , hidden: this.value});
+                }
+            }
+        }
+    }
+    //
+    var btnSave = boxPalettesHide.add("button{text:'Save',size:[100,20],properties:{name: 'ok'}}");
+    var hasSave = false;
+    btnSave.onClick = function(){
+        status = true;
+        boxPalettesHide.close();
+    }
+    boxPalettesHide.onClose = function(){
+        arrRes = (status)? arrRes  : [];
+    }
+    boxPalettesHide.show();
+    return JSON.stringify(arrRes);
+};
+function ConfigSetSw(punchEndPoints){
+    #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
+    var boxServer = new Window("dialog{text:'Server Config', properties:{closeButton: true}}");
+    var panelTypeData = boxServer.add("panel{text:'Type', orientation:'row', size:[220,50]}");
+    panelTypeData.add("radiobutton{text:'Database', value:true, flag:'databaseActive'}");
+    panelTypeData.add("radiobutton{text:'Bucket storage', value:false, flag:'bucketStorageActive'}");
+    var panelServer = boxServer.add("panel{text:'Endpoints', size: [220, 120], alignChildren:'left'}");
+    var grRadioBtn = panelServer.add("group");
+    grRadioBtn.orientation = "column";
+    grRadioBtn.alignChildren="left";
+    //handle type data
+    var activeServer = JSON.parse(JSON.stringify(punchEndPoints.activeServer));
+    createRadioServer("databaseActive");
+    for(var i=0;i<panelTypeData.children.length;i++){
+        panelTypeData.children[i].onClick = function(){
+            createRadioServer(this.flag,"Reload");
+        }
+    }
+    function createRadioServer(endpointType, mode){
+        for(var i=0;i<punchEndPoints.data.length; i++){
+            var radioBtn =(mode!="Reload")? grRadioBtn.add("radiobutton{text:'"+punchEndPoints.data[i].projectId+"', value: false, index:"+i+"}"): grRadioBtn.children[i];
+            if(activeServer[endpointType] == i){
+                radioBtn.value = true;
+            }
+            radioBtn.onClick = function(){
+                activeServer[endpointType] = this.index;
+            }
+        }
+    }
+    var btnOk = boxServer.add("button{size:[80,20],text:'OK', properties: {name:'ok'}}");
+    var response = null;
+    btnOk.onClick = function(){
+        if(JSON.stringify(punchEndPoints.activeServer).localeCompare(JSON.stringify(activeServer)) != 0){
+            punchEndPoints.activeServer = activeServer;
+            response = punchEndPoints;
+        }
+        boxServer.close();
+    }
+    boxServer.show();
+    return JSON.stringify(response);
 }
+function DeletePSDFile(nameFile){
+    var folderDel = new Folder("~/AppData/Roaming/Adobe/Toolbox Cache/Temp/"+nameFile);
+    var arrFiles = folderDel.getFiles();
+    for(var i=0; i<arrFiles.length; i++){
+        arrFiles[i].remove();
+    }
+    folderDel.remove();
+};
+function SortPaletteManual(objEnd, language){
+    #include '~/AppData/Roaming/Adobe/CEP/extensions/com.sam.toolbox.panel/client/json2.js'
+    var moveInfo = {position: "Inside"};
+    var boxPalette = new Window("dialog{text:'Current Palette("+objEnd.name[language]+")', properties:{closeButton: true}}");
+    var controlPanel = boxPalette.add("panel{text:'Position'}");
+    var radioGr = controlPanel.add("group");
+        radioGr.add("radiobutton{text: 'Forward', value: false}");
+        radioGr.add("radiobutton{text: 'Inside', value: true}");
+        radioGr.add("radiobutton{text: 'Backward', value: false}");
+    var btnGr = boxPalette.add("group");
+        var btnOk = btnGr.add("button{size:[80,20],text:'OK', properties: {name:'ok'}}");
+        var btnCancel = btnGr.add("button{size:[80,20],text:'Cancel', properties: {name:'cancel'}}");
+    //handle radiobutton
+    for(var i=0; i< radioGr.children.length;i++){
+        radioGr.children[i].onClick = function(){
+            moveInfo.position = this.text;
+        }
+    }
+    //handle confirm
+    var res = null;
+    btnOk.onClick = function(){
+        res = moveInfo.position;
+        boxPalette.close();
+    }
+    boxPalette.show();
+    return res;
+}
+function findPositionPalette(dataPalette, paletteActive,language ){
+	paletteActive = paletteActive.split("/");
+	if(paletteActive[0]==""){
+		paletteActive.splice(0,1);
+	}
+	var arrData = dataPalette;
+	var paletteTemp = null, k = null, dirChild="", objEnd;
+	for(var i=0; i<paletteActive.length; i++){
+		for(var j=0; j<arrData.length; j++){
+			if(paletteActive[i]== arrData[j].name[language]){
+				dirChild += "/"+ j;
+				k = j;
+				if(i != paletteActive.length - 1){								
+					paletteTemp = arrData[j];
+					if(arrData[j].data!=undefined){
+						arrData = arrData[j].data;
+						dirChild += "/data";
+					}
+					else{
+						arrData = [];
+					}
+				}
+				else {
+					objEnd = arrData[j];
+				}
+				break;
+			}
+		}
+	}
+	return {dataPalette: dataPalette, paletteTemp: paletteTemp, index: k, paletteActive: paletteActive, dirChild: dirChild, objEnd:objEnd};
+};
+//------
 //-------------------------------function LISTENER-----------------------------------
+function changeColorFill(objRGB){
+    var doc = app.activeDocument;
+    var ref = new ActionReference();
+    ref.putEnumerated( stringIDToTypeID("contentLayer"), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
+
+    var desc = new ActionDescriptor();
+    desc.putReference(charIDToTypeID("null"), ref);
+    var descColor = new ActionDescriptor();
+        var descRGB = new ActionDescriptor();
+        descRGB.putDouble( charIDToTypeID( "Rd  "), objRGB.red);
+        descRGB.putDouble( charIDToTypeID( "Grn "), objRGB.green);
+        descRGB.putDouble( charIDToTypeID( "Bl  "), objRGB.blue);
+    descColor.putObject( charIDToTypeID("Clr "), charIDToTypeID( "RGBC" ), descRGB);
+    desc.putObject( charIDToTypeID("T   "), stringIDToTypeID("solidColorLayer"), descColor);
+    executeAction(charIDToTypeID("setd"),  desc, DialogModes.NO);
+}
 function deleteMask(){
     var idDlt = charIDToTypeID( "Dlt " );
     var desc105 = new ActionDescriptor();
@@ -2639,6 +2971,9 @@ function showOnlyLayer(){
     executeAction( idShw, desc13, DialogModes.NO );
 };
 function makeSolidColor(name, red, green, blue, rgbObj, maskInvert, blendMode, opacity, clipping){
+    //----------
+    changeBackground ("#000000");
+    changeForeground ("#ffffff");
     if(rgbObj !=undefined){
         red = rgbObj.red;
         green = rgbObj.green;
@@ -2678,7 +3013,7 @@ function makeSolidColor(name, red, green, blue, rgbObj, maskInvert, blendMode, o
     desc6.putObject( idUsng, idcontentLayer, desc7 );
     executeAction( idMk, desc6, DialogModes.NO );
     //------------
-    if(maskInvert){
+    if(maskInvert || maskInvert==undefined){
         selectMaskChannel();
         var idInvr = charIDToTypeID( "Invr" );
         executeAction( idInvr, undefined, DialogModes.NO);
@@ -2692,49 +3027,7 @@ function makeSolidColor(name, red, green, blue, rgbObj, maskInvert, blendMode, o
     if(clipping){
         clippingMask(true);
     }
-    changeBackground ("#000000");
-    changeForeground ("#ffffff");
 };
-function progressBox(data, msg, balanceValue){
-    var percentVal =0, eachValue = 0;
-    var mybox = new Window("palette{text: 'Progress', properties: {closeButton: true}, spacing: 3}");
-    var grLabel = mybox.add("group{orientation: 'column', margins: 0, spacing: 0}");
-    var label = grLabel.add("statictext{text: '"+msg+"', preferredSize : [500,-1], justify: 'left'}");
-    var labelPercent = grLabel.add("statictext{text: "+percentVal+" + '%', size: [40,15], justify: 'center', }");
-    var panelForBar = mybox.add("panel{margins :0}");
-    var bar = panelForBar.add("progressbar{value:0, maxvalue: "+data+", preferredSize: [500, 20]}");
-    
-    progressBox.increaseBar = function(){
-        bar.value++
-    }
-    progressBox.setValue = function(val, msg){
-        bar.value = eachValue + (val * balanceValue)/100;
-        labelPercent.text = bar.value.toFixed (1) + "%";
-        label.text = msg;
-        if(val == 100){
-            if(bar.value==100){
-                $.sleep (100);
-                mybox.close();
-            }
-            else{
-                eachValue = bar.value;
-            }
-        }
-    }
-    progressBox.message = function(msg){
-        label.text = msg;
-    }
-    progressBox.percentIncrease= function(percentVal){
-        labelPercent.text = percentVal;
-    }
-    progressBox.status = function(){
-        return  (mybox.active)? true : false;
-    }
-    if(!mybox.active){
-        mybox.show();
-    }
-};
-//------
 function makeMask(){
     var idMk = charIDToTypeID( "Mk  " );
     var desc524 = new ActionDescriptor();
@@ -2945,3 +3238,25 @@ function clippingMask(status){
     desc18579.putReference( idnull, ref1704 );
     executeAction( idGrpL, desc18579, DialogModes.NO );
 }
+function writeLog(data){
+    var log = new File("~/Desktop/newLog.log");
+    log.open("w");
+    log.write(data);
+    log.close();
+}
+function setZoomLevel(zoom){
+    if(zoom < 1) zoom =1;
+    var ref = new ActionReference();
+    ref.putEnumerated(charIDToTypeID("capp"), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
+    var getScreenResolution = executeActionGet(ref).getObjectValue(stringIDToTypeID('unitsPrefs')).getUnitDoubleValue(stringIDToTypeID('newDocPresetScreenResolution'))/72;
+    var docResolution = activeDocument.resolution;
+    activeDocument.resizeImage(undefined, undefined, getScreenResolution/(zoom/100), ResampleMethod.NONE);
+    //setZoom
+    var desc = new ActionDescriptor();
+    ref = null;
+    ref = new ActionReference();
+    ref.putEnumerated(charIDToTypeID("Mn  "), charIDToTypeID("MnIt"), charIDToTypeID('PrnS'));
+    desc.putReference(charIDToTypeID("null"), ref);
+    executeAction(charIDToTypeID("slct"), desc, DialogModes.NO);
+    activeDocument.resizeImage(undefined, undefined, docResolution, ResampleMethod.NONE);
+};

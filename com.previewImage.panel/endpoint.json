@@ -1,0 +1,50 @@
+{"punchEndpoint" :{
+  "id": "0",
+  "activeServer": {
+    "databaseActive": 0,
+    "bucketStorageActive": 0
+  },
+  "data": [
+    {
+      "id": 0,
+      "apiKey": "AIzaSyDHp5dKAugX1A8v6030t_6kX3pKRsW4ZpQ",
+      "authDomain": "server-001-942d3.firebaseapp.com",
+      "databaseURL": "https://server-001-942d3.firebaseio.com",
+      "projectId": "server-001-942d3",
+      "storageBucket": "server-001-942d3.appspot.com",
+      "messagingSenderId": "241434096289",
+      "shortLink": "https://firebasestorage.googleapis.com/v0/b/server-001-942d3.appspot.com/o/Punch%2F"
+    },
+    {
+      "id": 1,
+      "apiKey": "AIzaSyB5dyo7i7J_xiooB8lY3u4O1Px5V7H7wQE",
+      "authDomain": "punch-ff7d9.firebaseapp.com",
+      "databaseURL": "https://punch-ff7d9.firebaseio.com",
+      "projectId": "punch-ff7d9",
+      "storageBucket": "punch-ff7d9.appspot.com",
+      "messagingSenderId": "1057346241352",
+      "shortLink": "https://firebasestorage.googleapis.com/v0/b/punch-ff7d9.appspot.com/o/Punch%2F"
+    },
+    {
+      "id": 2,
+      "apiKey": "AIzaSyCrIWX67hzeUgOxF8HtC3qRKElUlWaVJjc",
+      "authDomain": "monarque-8632f.firebaseapp.com",
+      "databaseURL": "https://monarque-8632f.firebaseio.com",
+      "projectId": "monarque-8632f",
+      "storageBucket": "monarque-8632f.appspot.com",
+      "messagingSenderId": "465301284142",
+      "shortLink": "https://firebasestorage.googleapis.com/v0/b/monarque-8632f.appspot.com/o/Punch%2F"
+    },
+    {
+      "id": 3,
+      "apiKey": "AIzaSyDg_NLUWqWN8L50dXGABJ0DY_K29mb13pE",
+      "authDomain": "wine-house-da4bf.firebaseapp.com",
+      "databaseURL": "https://wine-house-da4bf.firebaseio.com",
+      "projectId": "wine-house-da4bf",
+      "storageBucket": "wine-house-da4bf.appspot.com",
+      "messagingSenderId": "148797975754",
+      "shortLink": "https://firebasestorage.googleapis.com/v0/b/wine-house-da4bf.appspot.com/o/Punch%2F"
+    }
+  ],
+  "activedServer": 0
+}}

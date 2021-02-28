@@ -226,18 +226,18 @@ window.onload = function(){
 		//var staRef = storageRef.child('marginApp/EvoMargin.exe');
 	}*/
 	// DECLARE VERSION------------
-	var versionInfor = localStorage.getItem('versionInfor');
-	if(versionInfor==null){
-		versionInfor = "1.0.0";
+	var versionInfor = null;
+	csInterface.evalScript("getVersionInfo()", function(res){
+		versionInfor = res;
 		localStorage.setItem('versionInfor', versionInfor);
-	}
-	$('inforVersion').innerHTML = 'Version '+ versionInfor;
-	// LOAD PANEL CURRENT
-	var currentPanel = localStorage.getItem('currentPanel');
-	//alert(currentPanel);
-	if(currentPanel!=null && currentPanel!='index'){
-		location.href = currentPanel +'.html';
-	}
+		$('inforVersion').innerHTML = 'Version '+ versionInfor;
+		// LOAD PANEL CURRENT
+		var currentPanel = localStorage.getItem('currentPanel');
+		if(currentPanel!=null && currentPanel!='index'){
+			location.href = currentPanel +'.html';
+		}
+	})
+	
 	//-----------
 	//localStorage.removeItem('directoryData');
 	var objStep = localStorage.getItem('partialHandling');

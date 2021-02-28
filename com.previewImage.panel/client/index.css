@@ -1,0 +1,260 @@
+body{
+	font-family: Myriad Pro;
+	background-color: #4d4d4d;
+	overflow: auto;
+	user-select: none;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+}
+body::-webkit-scrollbar{
+	display: none;
+}
+	main{
+		position: relative;
+		width: 100%;
+	}
+		.action-Btn{
+			opacity: 0.5;
+			transition: 0.3s;
+		}
+		.action-Btn:hover{
+			opacity: 1;
+			height: 30px;
+		}
+		#infor{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			position: sticky;
+			top: 0;
+			margin: 0 auto;
+			z-index: 1;
+			background: #4d4d4d;
+			height: 50px;
+			border: 5px solid #4d4d4d;
+		}
+			#colorPicker{
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				flex-basis: 40%;
+			}
+				#colorPicker h5{
+					margin: 0 1em;
+					color: #bdbdbd;
+				}
+				#svgColor{
+					width: 50px;
+					height: 50px;
+					border: 3px solid #b2b2b2;
+				}
+				#menuSw{
+					display: none;
+					position: absolute;
+					background-color: white;
+					list-style: none;
+					font-size: 0.75em;
+					padding: 2px 2px;
+					cursor: default;
+					box-shadow: 2px 2px 6px #363636;
+					z-index: 3;
+				}
+				#menuSw li{
+					padding: .3em .5em;
+				}
+				#menuSw li:hover{
+					background-color: #3a60ad;
+					color: white;
+				}
+			#infor h4{
+				color: #808080;
+				margin: 0;
+				flex-basis: 20%;
+				text-align: center;
+			}
+			#grDel{
+				flex-basis: 40%;
+				text-align: right;
+			}
+				#grDel img{
+					margin-left: 10px;
+				}
+		#Preview{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 80%;
+			margin: 0 auto;
+			/*height: 100vh;*/
+		}
+			#imgGr{
+				position: relative;
+				width: 100%;
+			}
+				#imgCurrent{
+					width: 100%;
+					visibility: hidden;
+				}
+				#imgGr h4{
+					color: #ababab;
+				}
+				#canvasImage{
+					position: absolute;
+					top:50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+				}
+				.imgElement{
+					display: none;
+					width: 100%;
+					position: absolute;
+					top:50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+				}
+			#MenuImages{
+				display: none;
+				position: absolute;
+				z-index: 2;
+				background: white;
+				border-radius: 3px;
+				box-shadow: 2px 2px 10px #262626;
+			}
+				#MenuImages h5{
+					border-radius: 3px;
+					margin: 0;
+					padding: .5em .5em;
+					cursor: default;
+					transition: .2s;
+				}
+			#MenuImages h5:hover{
+				background: #007dcd;
+				color: white;
+			}
+		#control{
+			position: absolute;
+			width: 96%;
+			display: flex;
+			justify-content: space-between;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+		}
+			#control img{
+				opacity: 0.4;
+				transition: .3s;
+			}
+			#control img:hover{
+				opacity: 1;
+			}
+			#control img:active{
+				opacity: .4;
+			}
+	#popup{
+		display: none;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: rgba(0,0,0,0.7);
+		width: 100%;
+		height: 100%;
+		z-index: 3;
+		justify-content: center;
+		align-items: center;
+		animation-name: zoomin;
+		animation-duration: .2s;
+	}
+	#panelLayer{
+		display: none;
+		padding: 0 .5em;
+		width: 300px;
+	}
+		#panelLayer #labelInfo{
+			margin: 1em 0 .5em;
+			color: #d4d4d4;
+			padding: 5px 10px;
+			background: #007a98;
+		}
+		#documentPS{
+			position: sticky;
+			top:0;
+			border: 1px solid #007a98;
+			padding: 0 .2em;
+		}
+			.palette{
+				cursor: default;
+				padding: 0.1em 0;
+				border-bottom: 1px solid #414242;
+				border-radius: 5px;
+				transition: 0.3s
+			}
+				.palette img{
+					height: 14px;
+					opacity: 0.7;
+				}
+				.palette h6{
+					display: inline-block;
+					margin: 0 .5em;
+					padding: 0;
+					font-size: 0.7em;
+					color: #a7a7a7;
+					opacity: 0.7;
+					transition: 0.3s
+				}
+				.palette .contextMenu{
+					z-index: 2;
+					display: none;
+					background-color: #cecece;
+					box-shadow: 2px 2px 6px #222222;
+				}
+					.palette .contextMenu h5{
+						padding: 0.3em 1em 0.1em 1em;
+						font-size: 0.65em;
+						margin: 0;
+					}
+					.palette .contextMenu h5:hover{
+						background-color: #2470b7;
+						color: white;
+					}
+			#documentPS svg{
+				width: 20px;
+				height: 20px;
+				transition: 0.3s;
+			}
+			#documentPS svg:hover>path{
+				fill: #e7e7e7;
+			}
+			#inforSwatches{
+				background-color: #4d4d4d;
+			}
+				#inforSwatches h6{
+					color: #cbcbcb;
+					font-weight: normal;
+					font-style: italic;
+					margin: 0.2em 1em;
+				}
+		#PsControl{
+			padding: 2px 1em;
+			text-align: right;
+			position: sticky;
+		}
+			#PsControl img{
+				opacity: .5;
+			}
+			#PsControl img:hover{
+				opacity: 1;
+			}
+@keyframes zoomin{
+	from{
+		width: 20%;
+		height: 20%;
+	}
+	to{
+		width: 100%;
+		height: 100%;
+	}
+}
+/* responsive */

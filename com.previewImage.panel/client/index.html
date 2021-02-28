@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PreviewImage</title>
+    <link rel = "stylesheet" href="index.css">
+    <script type="text/javascript" src="CSInterface.js"></script>
+    <link rel="shortcut icon" type="image/png" href="LogoSAM.png"/>
+</head>
+<body>
+  <main>
+    <div id="infor">
+      <div id= "colorPicker">
+      </div>
+      <h4 id='pageNum'></h4>
+      <div id='grDel'>
+        <img src="images/PsIcon.svg" style="margin-right: 10px;" height="20" id='OpenInPS' class="action-Btn">
+        <img src="iconSVG/sort-amount-up-solid.svg" height="20" id='sortImg' class="action-Btn">
+        <img src="images/trash-alt-solid.svg" height="20" id='DelImg' class="action-Btn">
+      </div>
+    </div>
+    <div id ="control">
+      <img src="images/arrow-circle-left-solid.svg" height="40" id="previous">
+      <img src="images/arrow-circle-right-solid.svg" height="40" id="next">
+    </div>
+    <div id ="Preview">
+      <img src = 'images/loading.gif' height="100" style='display: none;' id= "imgLoading">
+      <div id="imgGr">
+      </div>
+      <div id="MenuImages">
+        <h5 id="OpenPsd">Open PSD file</h5>
+        <h5 id="psdUpload">Upload PSD file</h5>
+        <h5 id="clearCache">Clear Cache</h5>
+      </div>
+    </div>
+    <div id="popup">
+      <img src = 'images/loading.gif' height="70">
+    </div>
+  </main>
+  <div id="panelLayer">
+    <h5 id ="labelInfo">Auto Swatches</h5>
+    <div id="documentPS">
+    </div>
+    <div id="PsControl">
+      <img src="iconSVG/eraser-solid.svg" height="14" id="removeJsonPSD">
+    </div>
+    <div id ="inforSwatches">
+      <h6 id = "contentInfSw"></h6>
+    </div>
+    <ul id="menuSw">
+      <li id="changeColorFill">Re-Color</li>
+      <li id="editSw">Edit</li>
+    </ul>
+  </div>
+  <script type="text/javascript" src="firebase.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+  <script type="text/javascript" src="FileSaver.js"></script>
+</body>
+</html>

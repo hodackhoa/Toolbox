@@ -49,7 +49,12 @@ body{
 				#searchGr input::placeholder{
 					font-style: italic;
 					color: #217ec4;
-				}	
+					opacity: .4;
+				}
+					#nextSearch{
+						background: blue;
+						padding: 4px;
+					}	
 		#swatchesCollection{
 			padding: .3em .3em;
 		}
@@ -69,7 +74,7 @@ body{
 				border-radius: 5px;
 				transition: 0.3s
 			}	
-			.palette:hover >h6{
+			.palette:hover{
 				
 			}
 				.palette h6{
@@ -117,6 +122,7 @@ body{
 					padding: 2px 2px;
 					cursor: default;
 					box-shadow: 2px 2px 6px #363636;
+					z-index: 3;
 				}
 				#menuSw li{
 					padding: .3em .5em;
@@ -127,6 +133,7 @@ body{
 				}
 		#inforSwatches{
 			background-color: #4d4d4d;
+			z-index: 5;
 		}
 			#inforSwatches h6{
 				color: #cbcbcb;
@@ -134,15 +141,36 @@ body{
 				font-style: italic;
 				margin: 0.2em 1em;
 			}
+		#thumbGr{
+			position: absolute;
+			width: 100px;
+			height: 100px;
+			background: #4d4d4d;
+			box-shadow: 2px 2px 10px #1d1d1d;
+			border: 3px solid #949494;
+			border-radius: 3px;
+			display: none;
+			transition: .1s;
+			z-index: 4;
+		}
+			#thumbGr img{
+				max-width: 100%;
+				max-height: 100vh;
+			}
 	#languageControl{
+		width: 90%;
 		height: 25px;
-		margin: 0 1em;
+		padding: 2px 5%;
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
+		background: #4d4d4d;
+		box-shadow: 0 -2px 5px #333333;
+		position: sticky;
+		bottom: 0;
 	}
 		#languageControl h4{
-			margin: 0 1em;
+			margin-left: 1em;
 			color: #7e7e7e;
 			font-size: .8em;
 			cursor: default;
@@ -151,10 +179,49 @@ body{
 		#languageControl h4:hover{
 			color: #d5d5d5
 		}
+		#settingConfig:hover{
+			height: 20px;
+		}
 		#languageControl img{
+			margin-left: 1em;
 			opacity: 0.3;
 			transition: 0.3s;
 		}
 		#languageControl img:hover{
 			opacity: 1;
 		}
+/* declare animation */
+@keyframes zoomin{
+	0%{
+		width: 0;
+		height: 0;
+		opacity: 0;
+	}
+	70%{
+		width: 0;
+		height: 0;
+		opacity: 0;
+	}
+	85%{
+		width: 75px;
+		height: 75px;
+		opacity: .5;
+	}
+	100%{
+		width: 100px;
+		height: 100px;
+		opacity: 1;
+	}
+}
+@keyframes zoomout{
+	from{
+		width: 100px;
+		height: 100px;
+		opacity: 1;
+	}
+	to{
+		width: 10px;
+		height: 10px;
+		opacity: 0;
+	}
+}
